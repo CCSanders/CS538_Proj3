@@ -1,2 +1,28 @@
 sources
 [1] http://mininet.org/overview/
+
+start topology by beginning mininet with competition.py
+xterm to h3 (twice), start 2 listening ports for background traffic
+- chose 5433 and 5434
+- $ netcat -l PORT
+
+xterm to h1, h2. start randomized telnet to those ports and the h3 ip
+- $ sudo python3 randomtelnet.py 10.0.3.10 5433/5434
+
+xterm to a new h3, start dual receive (opens two listening ports)
+- ports in the python script. h1 will send to 5430 and h2 will send to 5431
+- $ sudo python3 dualreceive.py > dualreceive_out_1.txt
+
+xterm to h1 and h2. there are two scripts that will allow us to start sending data on these two nodes to dual receive p much simultaneously.
+- ./h1.sh, ./h2.sh
+- in these scripts, had to set CWID digits to blocks count, set the h3 port number, add the ports specified in dual receive, and set with tcp congestion protocol to use. (reno in H1, vegas in H2)
+
+xterm to r, start wintracker with python 2 and save the output to file. 
+- $ sudo python2 wintracker.py > wintracker_out_1.txt
+
+xterm to r again and start the r.sh script that will unblock h1 and h2 and start the measurements
+
+changed delay of R->H3 link from 110ms to 300ms and tried again
+- outputs in dualreceive_out_2.txt and wintracker_out_2.txt
+
+reverted delay back to 110ms and added in 1% packet drop. 
